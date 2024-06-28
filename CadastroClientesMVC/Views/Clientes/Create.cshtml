@@ -1,0 +1,97 @@
+﻿@model CadastroClientesMVC.Models.Entities.Cliente
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Cadastrar Cliente</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Name</label>
+                <span asp-validation-for="Name" class="text-danger">*</span>
+                <input asp-for="Name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Type</label>
+                <select asp-for="Type" class="form-control" id="Type">
+                    <option value=""></option>
+                    <option value="CNPJ">CNPJ</option>
+                    <option value="CPF">CPF</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Document</label>
+                <span asp-validation-for="Document" class="text-danger">*</span>
+                <input asp-for="Document" class="form-control" id="Doc" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">PhoneNumber</label>
+                <span asp-validation-for="PhoneNumber" class="text-danger">*</span>
+                <input asp-for="PhoneNumber" class="form-control" placeholder="(99) 99999-9999" id="PhoneNumber" />
+            </div>
+            <br/>
+            <div class="form-group">
+                <input type="submit" value="Salvar" class="btn btn-primary" /> |
+                <a asp-action="Index" class="btn btn-outline-warning">Lista de Clientes</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script>
+    $(document).ready(function () { 
+        
+        $("#Doc").prop("disabled", true);
+
+        $('#Type').change(function (event) {
+            let tipo = event.currentTarget.value;
+            console.log("Tipo: ", tipo);
+
+            switch (tipo) {
+                case 'CNPJ':
+                    {
+                        $("#Doc").prop("disabled", false);
+                        $("#Doc").val("");
+                        new Cleave('#Doc', {
+                            blocks: [2, 3, 3, 4, 2],
+                            delimiters: ['.', '.', '/', '-'],
+                            numericOnly: true
+                        });
+                    }
+                    break;
+                case 'CPF':
+                    {
+                        $("#Doc").prop("disabled", false);
+                        $("#Doc").val("");
+                        new Cleave('#Doc', {
+                            blocks: [3, 3, 3, 2],
+                            delimiters: ['.', '.', '-'],
+                            numericOnly: true
+                        });
+                    }
+                    break;
+                default:
+                    {
+                        $("#Doc").val("");
+                        $("#Doc").prop("disabled", true);
+                    }
+            }
+        });
+
+        new Cleave('#PhoneNumber', {
+            blocks: [0, 2, 5, 4],
+            delimiters: ['(', ') ', '-'],
+            numericOnly: true
+        });
+
+    });
+    
+</script>
